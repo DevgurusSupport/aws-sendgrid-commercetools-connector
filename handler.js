@@ -13,7 +13,6 @@ export const sendEmail = async (event, context) => {
   }
   console.info('Building the email ...');
   const msg = buildMessage(message);
-  console.log(msg);
   if (!msg) {
     return;
   }

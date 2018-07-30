@@ -14,7 +14,18 @@ jest.mock('@sendgrid/mail', () => {
 });
 
 const sendEmail = async () => {
-  const event = { Records: [{ Sns: { Message: 'Message' } }] };
+  const event = {
+    Records: [
+      {
+        Sns: {
+          Message: {
+            type: 'CustomerCreated',
+            customer: { email: 'test@test.com' },
+          },
+        },
+      },
+    ],
+  };
   const context = 'context';
 
   return await handler.sendEmail(event, context);
@@ -28,9 +39,8 @@ describe('calling the send email function', () => {
     });
     test('sendEmail', async () => {
       const result = await sendEmail();
-      expect(result).toBeTruthy();
       expect(console.info).toHaveBeenCalledTimes(2);
-      expect(console.info).toHaveBeenCalledWith('Sending the email...');
+      expect(console.info).toHaveBeenCalledWith('Building the email ...');
       expect(console.info).toHaveBeenCalledWith('Email sent.');
       expect(console.error).toHaveBeenCalledTimes(0);
     });
@@ -48,10 +58,9 @@ describe('calling the send email function', () => {
     });
     test('sendEmail', async () => {
       const result = await sendEmail();
-      expect(result).toBeFalsy();
       expect(console.info).toHaveBeenCalledTimes(1);
       expect(console.error).toHaveBeenCalledTimes(1);
-      expect(console.info).toHaveBeenCalledWith('Sending the email...');
+      expect(console.info).toHaveBeenCalledWith('Building the email ...');
       expect(console.error).toHaveBeenCalledWith('Error Error! with code 500');
     });
   });

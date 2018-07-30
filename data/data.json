@@ -1,0 +1,15 @@
+{
+  "Records": [
+    {
+      "Sns": {
+        "Message": {
+          "type": "CustomerCreated",
+          "customer": {
+            "email": "dani@devgurus.io",
+            "firstName": "Daniel"
+          }
+        }
+      }
+    }
+  ]
+}

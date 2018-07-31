@@ -24,7 +24,7 @@ describe('building message', () => {
     test('return customer created message', () => {
       expect(buildMessage(customerCreatedMessage)).toEqual({
         from: customerCreatedMessage.fromEmail,
-        html: 'Hey user, thanks for registering!',
+        html: 'Hey user, thanks for registerings!',
         subject: `Welcome ${customerCreatedMessage.customer.firstName}`,
         substitutions: customerCreatedMessage.customer,
         to: customerCreatedMessage.customer.email,

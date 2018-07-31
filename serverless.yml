@@ -1,10 +1,8 @@
-# NOTE: update this with your service name
 service: commercetools-sendgrid-connector
 
 # Use the serverless-webpack plugin to transpile ES6
 plugins:
   - serverless-webpack
-  - serverless-offline
 
 # serverless-webpack configuration
 # Enable auto-packing of external modules
@@ -26,9 +24,7 @@ provider:
   #environment: ${file(env.yml):${self:provider.stage}}
 
 functions:
-  sendEmail:
-    handler: handler.sendEmail
+  lambda:
+    handler: handler.lambda
     events:
-      - http:
-          path: hello
-          method: get
+      - sns: sendgrid-email-topic

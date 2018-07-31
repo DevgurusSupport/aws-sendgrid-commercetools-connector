@@ -3,15 +3,18 @@ import { buildMessage } from './utils';
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-export const sendEmail = async (event, context) => {
-  const message = event.Records[0].Sns.Message;
+export const lambda = async (event, _) => {
+  const message = JSON.parse(event.Records[0].Sns.Message);
   if (!message) {
     console.error(
       `Could not extract the message from the event: ${JSON.stringify(event)}`
     );
     return;
   }
-  console.info('Building the email ...');
+  await sendEmail({ ...message, fromEmail: process.env.FROM_EMAIL_ADDRESS });
+};
+
+export const sendEmail = async message => {
   const msg = buildMessage(message);
   if (!msg) {
     return;

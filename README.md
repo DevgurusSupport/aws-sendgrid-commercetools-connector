@@ -42,3 +42,5 @@ Deploy a single function
 ``` bash
 $ serverless deploy function --function lambda
 ```
+
+Once deployed, follow the instructions to set up your commercetools subscription to use this connector [here](https://docs.commercetools.com/http-api-projects-subscriptions.html)

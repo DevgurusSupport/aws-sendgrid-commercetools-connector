@@ -14,6 +14,7 @@ describe('building message', () => {
       );
     });
   });
+
   describe('when `CustomerCreated` type received', () => {
     const customerCreatedMessage = {
       type: 'CustomerCreated',
@@ -27,6 +28,30 @@ describe('building message', () => {
         subject: `Welcome ${customerCreatedMessage.customer.firstName}`,
         substitutions: customerCreatedMessage.customer,
         to: customerCreatedMessage.customer.email,
+      });
+    });
+  });
+
+  describe('when `OrderCreated` type received', () => {
+    const orderCreatedMessage = {
+      type: 'OrderCreated',
+      order: {
+        customerEmail: 'test@test.com',
+        orderNumber: 'TEST000012345',
+        totalPrice: {
+          currencyCode: 'EUR',
+          centAmount: 1000,
+        },
+      },
+      fromEmail: 'test@test.io',
+    };
+    test('return order created message', () => {
+      expect(buildMessage(orderCreatedMessage)).toEqual({
+        from: orderCreatedMessage.fromEmail,
+        html: 'Order successfully created!',
+        subject: `Your order ${orderCreatedMessage.order.orderNumber}`,
+        substitutions: orderCreatedMessage.order,
+        to: orderCreatedMessage.order.customerEmail,
       });
     });
   });

@@ -29,7 +29,7 @@ describe('calling the send email function', () => {
     beforeEach(() => {
       global.console = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
     });
-    test('sendEmail', async () => {
+    test('send email function not called', async () => {
       const result = await sendEmail(mockMessage({ type: 'Other' }));
       expect(console.warn).toHaveBeenCalledTimes(1);
       expect(console.error).toHaveBeenCalledTimes(0);
@@ -42,7 +42,7 @@ describe('calling the send email function', () => {
       global.console = { info: jest.fn(), error: jest.fn() };
       message = mockMessage();
     });
-    test('sendEmail', async () => {
+    test('send email function called and email sent', async () => {
       const result = await sendEmail(mockMessage());
       expect(console.info).toHaveBeenCalledTimes(1);
       expect(console.info).toHaveBeenCalledWith('Email sent.');
@@ -72,7 +72,7 @@ describe('calling the send email function', () => {
           })
       );
     });
-    test('sendEmail', async () => {
+    test('send email function called and error shown', async () => {
       const result = await sendEmail(mockMessage());
       expect(sgMail.send).toHaveBeenCalledTimes(1);
       expect(console.error).toHaveBeenCalledTimes(1);

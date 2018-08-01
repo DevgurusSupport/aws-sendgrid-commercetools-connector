@@ -6,26 +6,26 @@ jest.mock('../services/sendgrid', () => {
 });
 
 describe('calling the lambda function', () => {
-  describe('when invalid message came', () => {
+  describe('when invalid message received', () => {
     let event;
     beforeEach(() => {
       global.console = { error: jest.fn() };
       event = { Records: [{ Sns: { Message: null } }] };
     });
-    test('invalid message', async () => {
+    test('send email not called and error logged', async () => {
       await handler.lambda(event);
       expect(console.error).toHaveBeenCalledTimes(1);
       expect(sendEmail).toHaveBeenCalledTimes(0);
     });
   });
 
-  describe('when valid message came', () => {
+  describe('when valid message received', () => {
     let event;
     beforeEach(() => {
       global.console = { error: jest.fn() };
       event = { Records: [{ Sns: { Message: '{ "type": "test" }' } }] };
     });
-    test('invalid message', async () => {
+    test('send email function called', async () => {
       await handler.lambda(event);
       expect(console.error).toHaveBeenCalledTimes(0);
       expect(sendEmail).toHaveBeenCalledTimes(1);

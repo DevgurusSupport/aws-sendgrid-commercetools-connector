@@ -1,7 +1,7 @@
 import { buildMessage } from '../../utils';
 
-describe('building message', () => {
-  describe('when no valid message received', () => {
+describe('building message to be sent', () => {
+  describe('when no supported type received', () => {
     const invalidMessage = { type: 'NotValidType' };
     beforeEach(() => {
       global.console = { warn: jest.fn() };

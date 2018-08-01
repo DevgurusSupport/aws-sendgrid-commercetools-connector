@@ -5,6 +5,8 @@ export const buildMessage = msg => {
       return generateCustomerCreatedMessage(msg);
     case 'OrderCreated':
       return generateOrderCreatedMessage(msg);
+    case 'ResetPassword':
+      return generateResetPasswordMessage(msg);
     default:
       console.warn(`Ignoring message: ${JSON.stringify(msg)}`);
       return null;
@@ -35,5 +37,20 @@ const generateOrderCreatedMessage = ({ order, fromEmail }) => ({
     orderNumber: order.orderNumber,
     customerEmail: order.customerEmail,
     totalPrice: order.totalPrice,
+  },
+});
+
+const generateResetPasswordMessage = ({ email, token, fromEmail }) => ({
+  to: email,
+  from: fromEmail,
+  subject: 'Reset Password',
+  html: `Here is the link to reset your password <a>${
+    process.env.RESET_PASSWORD_URL_PREFIX
+  }${token}`,
+  // in case you use a template, set the id here
+  // templateId: '',
+  substitutions: {
+    email: email,
+    token: token,
   },
 });

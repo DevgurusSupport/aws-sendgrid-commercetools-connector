@@ -3,6 +3,7 @@ service: commercetools-sendgrid-connector
 # Use the serverless-webpack plugin to transpile ES6
 plugins:
   - serverless-webpack
+  - serverless-offline
 
 # serverless-webpack configuration
 # Enable auto-packing of external modules
@@ -28,3 +29,9 @@ functions:
     handler: handler.lambda
     events:
       - sns: sendgrid-email-topic
+  resetPassword:
+    handler: handler.resetPassword
+    events:
+      - http:
+          path: reset/password
+          method: post

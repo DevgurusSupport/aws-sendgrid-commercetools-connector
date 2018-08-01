@@ -1,5 +1,5 @@
 export const buildMessage = msg => {
-  // TODO to be completed
+  // TODO to be completed with other common scenarios
   switch (msg.type) {
     case 'CustomerCreated':
       return generateCustomerCreatedMessage(msg);

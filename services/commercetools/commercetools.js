@@ -5,7 +5,7 @@ import { createHttpMiddleware } from '@commercetools/sdk-middleware-http';
 import { createAuthMiddlewareForClientCredentialsFlow } from '@commercetools/sdk-middleware-auth';
 
 const requestBuilder = createRequestBuilder({
-  projectKey: process.env.COMMERCETOOLS_PROJECT_KEY,
+  projectKey: process.env.COMMERCETOOLS_PROJECT_KEY || 'void',
 });
 
 const customersService = requestBuilder.customers;

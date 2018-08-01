@@ -39,6 +39,7 @@ export const resetPassword = async (event, _) => {
         email: body.email,
         token,
         fromEmail: process.env.FROM_EMAIL_ADDRESS,
+        resetPasswordUrlPrefix: process.env.RESET_PASSWORD_URL_PREFIX,
       });
     }
   } catch (ex) {

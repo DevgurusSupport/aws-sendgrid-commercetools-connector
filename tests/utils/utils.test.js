@@ -55,4 +55,28 @@ describe('building message to be sent', () => {
       });
     });
   });
+
+  describe('when `ResetPassword` type received', () => {
+    const resetPasswordMessage = {
+      type: 'ResetPassword',
+      email: 'test@test.com',
+      token: 'abcdefghi123456',
+      fromEmail: 'test@test.io',
+      resetPasswordUrlPrefix: 'https://test.io/reset/password/',
+    };
+    test('return reset password message', () => {
+      expect(buildMessage(resetPasswordMessage)).toEqual({
+        from: resetPasswordMessage.fromEmail,
+        html: `Here is the link to reset your password <a>${
+          resetPasswordMessage.resetPasswordUrlPrefix
+        }${resetPasswordMessage.token}</a>`,
+        subject: 'Reset Password',
+        substitutions: {
+          email: resetPasswordMessage.email,
+          token: resetPasswordMessage.token,
+        },
+        to: resetPasswordMessage.email,
+      });
+    });
+  });
 });

@@ -17,7 +17,7 @@ export const sendEmail = async message => {
   }
 };
 
-const populateSendgridException = exception => {
+export const populateSendgridException = exception => {
   console.error(
     `Sendgrid -> Error ${exception.message} with code ${exception.code}`
   );

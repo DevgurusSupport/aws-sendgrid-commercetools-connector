@@ -40,13 +40,18 @@ const generateOrderCreatedMessage = ({ order, fromEmail }) => ({
   },
 });
 
-const generateResetPasswordMessage = ({ email, token, fromEmail }) => ({
+const generateResetPasswordMessage = ({
+  email,
+  token,
+  fromEmail,
+  resetPasswordUrlPrefix,
+}) => ({
   to: email,
   from: fromEmail,
   subject: 'Reset Password',
-  html: `Here is the link to reset your password <a>${
-    process.env.RESET_PASSWORD_URL_PREFIX
-  }${token}`,
+  html: `Here is the link to reset your password <a>${resetPasswordUrlPrefix}${
+    token
+  }</a>`,
   // in case you use a template, set the id here
   // templateId: '',
   substitutions: {

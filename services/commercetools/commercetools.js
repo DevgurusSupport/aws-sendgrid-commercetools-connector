@@ -1,3 +1,4 @@
+require('isomorphic-fetch');
 import { createRequestBuilder } from '@commercetools/api-request-builder';
 import { createClient } from '@commercetools/sdk-client';
 import { createHttpMiddleware } from '@commercetools/sdk-middleware-http';

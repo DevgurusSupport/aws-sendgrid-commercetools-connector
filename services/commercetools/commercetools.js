@@ -1,8 +1,4 @@
-require('isomorphic-fetch');
 import { createRequestBuilder } from '@commercetools/api-request-builder';
-import { createClient } from '@commercetools/sdk-client';
-import { createHttpMiddleware } from '@commercetools/sdk-middleware-http';
-import { createAuthMiddlewareForClientCredentialsFlow } from '@commercetools/sdk-middleware-auth';
 
 const requestBuilder = createRequestBuilder({
   projectKey: process.env.COMMERCETOOLS_PROJECT_KEY || 'void',
@@ -10,23 +6,7 @@ const requestBuilder = createRequestBuilder({
 
 const customersService = requestBuilder.customers;
 
-const client = createClient({
-  middlewares: [
-    createAuthMiddlewareForClientCredentialsFlow({
-      host: 'https://auth.commercetools.co',
-      projectKey: process.env.COMMERCETOOLS_PROJECT_KEY,
-      credentials: {
-        clientId: process.env.COMMERCETOOLS_CLIENT_ID,
-        clientSecret: process.env.COMMERCETOOLS_CLIENT_SECRET,
-      },
-    }),
-    createHttpMiddleware({
-      host: 'https://api.commercetools.co',
-    }),
-  ],
-});
-
-export const checkIfCustomerExists = async email => {
+export const checkIfCustomerExists = async (email, client) => {
   const uri = customersService.where(`email="${email}"`).build();
   const fetchRequest = {
     uri,
@@ -44,7 +24,7 @@ export const checkIfCustomerExists = async email => {
   }
 };
 
-export const generateResetPasswordToken = async email => {
+export const generateResetPasswordToken = async (email, client) => {
   const resetRequest = {
     uri: `/${process.env.COMMERCETOOLS_PROJECT_KEY}/customers/password-token`,
     method: 'POST',

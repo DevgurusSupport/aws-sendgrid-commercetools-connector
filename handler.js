@@ -1,3 +1,4 @@
+import { client } from './clients/commercetools';
 import { sendEmail } from './services/sendgrid';
 import {
   checkIfCustomerExists,
@@ -26,14 +27,14 @@ export const resetPassword = async (event, _) => {
   };
   const body = JSON.parse(event.body);
   try {
-    const exists = await checkIfCustomerExists(body.email);
+    const exists = await checkIfCustomerExists(body.email, client);
     if (!exists) {
       response = {
         statusCode: 404,
         body: JSON.stringify({ message: `Customer ${body.email} not found!` }),
       };
     } else {
-      const token = await generateResetPasswordToken(body.email);
+      const token = await generateResetPasswordToken(body.email, client);
       await sendEmail({
         type: 'ResetPassword',
         email: body.email,

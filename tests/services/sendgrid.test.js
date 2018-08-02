@@ -73,12 +73,16 @@ describe('calling the send email function', () => {
       );
     });
     test('send email function called and error shown', async () => {
-      const result = await sendEmail(mockMessage());
-      expect(sgMail.send).toHaveBeenCalledTimes(1);
-      expect(console.error).toHaveBeenCalledTimes(1);
-      expect(console.error).toHaveBeenCalledWith(
-        `Error ${error.message} with code ${error.code}`
-      );
+      try {
+        const result = await sendEmail(mockMessage());
+        expect(true).toBe(false);
+      } catch (_) {
+        expect(sgMail.send).toHaveBeenCalledTimes(1);
+        expect(console.error).toHaveBeenCalledTimes(1);
+        expect(console.error).toHaveBeenCalledWith(
+          `Sendgrid -> Error ${error.message} with code ${error.code}`
+        );
+      }
     });
   });
 });

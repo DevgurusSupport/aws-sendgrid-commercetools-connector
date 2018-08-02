@@ -13,6 +13,13 @@ export const sendEmail = async message => {
     await sgMail.send(msg);
     console.info('Email sent.');
   } catch (ex) {
-    console.error(`Error ${ex.message} with code ${ex.code}`);
+    populateSendgridException(ex);
   }
+};
+
+export const populateSendgridException = exception => {
+  console.error(
+    `Sendgrid -> Error ${exception.message} with code ${exception.code}`
+  );
+  throw exception;
 };

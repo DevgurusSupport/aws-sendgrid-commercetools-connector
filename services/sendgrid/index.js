@@ -1,1 +1,1 @@
-export { sendEmail } from './sendgrid';
+export { sendEmail, populateSendgridException } from './sendgrid';

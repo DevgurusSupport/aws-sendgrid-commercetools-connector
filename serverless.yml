@@ -17,6 +17,8 @@ provider:
   runtime: nodejs8.10
   stage: dev
   region: us-east-1
+  apiKeys:
+    - COMMERCETOOLS_SENDGRID_API_KEY # you can hide it in a serverless variable
   # To load environment variables externally
   # rename env.example to env.yml and uncomment
   # the following line. Also, make sure to not
@@ -35,3 +37,4 @@ functions:
       - http:
           path: reset/password
           method: post
+          private: true

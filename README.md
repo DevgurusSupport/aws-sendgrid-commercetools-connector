@@ -1,6 +1,7 @@
 # Sendgrid commercetools serverless for AWS
 
 [![CircleCI](https://circleci.com/gh/DevgurusSupport/aws-sendgrid-commercetools-connector/tree/master.svg?style=svg)](https://circleci.com/gh/DevgurusSupport/aws-sendgrid-commercetools-connector/tree/master)
+[![Coverage Status](https://coveralls.io/repos/github/DevgurusSupport/aws-sendgrid-commercetools-connector/badge.svg?branch=master)](https://coveralls.io/github/DevgurusSupport/aws-sendgrid-commercetools-connector?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Thse sendgrid commercetools serverless connector for AWS, allows you to quickly deploy a cloud service to manage your emails in Sendgrid based on commercetools messaging and subscriptions.

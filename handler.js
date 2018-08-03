@@ -34,6 +34,7 @@ export const resetPassword = async (event, _) => {
         body: JSON.stringify({ message: `Customer ${body.email} not found!` }),
       };
     } else {
+      // get the commercetools reset password request token and send email
       const token = await generateResetPasswordToken(body.email, client);
       await sendEmail({
         type: 'ResetPassword',

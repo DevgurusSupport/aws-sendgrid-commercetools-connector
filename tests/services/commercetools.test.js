@@ -6,21 +6,23 @@ import {
 describe('searching customers by email address', () => {
   describe('when the email addres is not found', () => {
     let client;
-    beforeEach(() => {
+    let res;
+    beforeEach(async () => {
       client = {
         execute: jest.fn(email =>
           Promise.resolve({ body: { statusCode: 200, results: [] } })
         ),
       };
+      res = await checkIfCustomerExists('test@devgurus.io', client);
     });
-    test('email address not found', async () => {
-      const res = await checkIfCustomerExists('test@devgurus.io', client);
+    test('email address not found', () => {
       expect(res).toBeFalsy();
     });
   });
   describe('when the email addres is found', () => {
     let client;
-    beforeEach(() => {
+    let res;
+    beforeEach(async () => {
       client = {
         execute: jest.fn(email =>
           Promise.resolve({
@@ -28,9 +30,9 @@ describe('searching customers by email address', () => {
           })
         ),
       };
+      res = await checkIfCustomerExists('test@devgurus.io', client);
     });
-    test('email address found', async () => {
-      const res = await checkIfCustomerExists('test@devgurus.io', client);
+    test('email address found', () => {
       expect(res).toBeTruthy();
     });
   });
@@ -38,7 +40,8 @@ describe('searching customers by email address', () => {
 
 describe('generating reset password token', () => {
   let client;
-  beforeEach(() => {
+  let res;
+  beforeEach(async () => {
     client = {
       execute: jest.fn(() =>
         Promise.resolve({
@@ -46,9 +49,9 @@ describe('generating reset password token', () => {
         })
       ),
     };
+    res = await generateResetPasswordToken('test@devgurus.io', client);
   });
-  test('token generated', async () => {
-    const res = await generateResetPasswordToken('test@devgurus.io', client);
+  test('token generated', () => {
     expect(res).toBe('ABCDEFG123456789');
   });
 });

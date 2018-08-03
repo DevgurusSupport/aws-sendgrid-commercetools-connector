@@ -3,7 +3,10 @@ import { buildMessage } from '../../utils';
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-export const sendEmail = async message => {
+export const sendEmail = async (
+  message,
+  populateException = populateSendgridException
+) => {
   const msg = buildMessage(message);
   if (!msg) {
     return;
@@ -13,7 +16,7 @@ export const sendEmail = async message => {
     await sgMail.send(msg);
     console.info('Email sent.');
   } catch (ex) {
-    populateSendgridException(ex);
+    populateException(ex);
   }
 };
 

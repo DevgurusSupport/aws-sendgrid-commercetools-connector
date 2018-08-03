@@ -49,9 +49,9 @@ const generateResetPasswordMessage = ({
   to: email,
   from: fromEmail,
   subject: 'Reset Password',
-  html: `Here is the link to reset your password <a>${resetPasswordUrlPrefix}${
+  html: `Here is the <a href="${resetPasswordUrlPrefix}${
     token
-  }</a>`,
+  }">link</a> to reset your password`,
   // in case you use a template, set the id here
   // templateId: '',
   substitutions: {

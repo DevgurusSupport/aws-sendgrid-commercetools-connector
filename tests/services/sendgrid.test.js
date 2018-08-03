@@ -1,15 +1,10 @@
-import sgMail from '@sendgrid/mail';
+import { send, setApiKey } from '@sendgrid/mail';
 import { sendEmail } from '../../services/sendgrid';
 
 jest.mock('@sendgrid/mail', () => {
   return {
     setApiKey: jest.fn(),
-    send: jest.fn(
-      () =>
-        new Promise(function(resolve, reject) {
-          resolve({ message: 'All good!', code: 200 });
-        })
-    ),
+    send: jest.fn(() => Promise.resolve({ message: 'All good!', code: 200 })),
   };
 });
 
@@ -22,33 +17,43 @@ const mockMessage = data => ({
 
 describe('calling the send email function', () => {
   test('set the API Key value for the sendgrid client', () => {
-    expect(sgMail.setApiKey).toHaveBeenCalledTimes(1);
+    expect(setApiKey).toHaveBeenCalledTimes(1);
   });
 
   describe('ignored message type received', () => {
-    beforeEach(() => {
+    let populateExceptionFn;
+    beforeEach(async () => {
+      send.mockClear();
       global.console = { error: jest.fn(), warn: jest.fn(), info: jest.fn() };
+      populateExceptionFn = jest.fn();
+      await sendEmail(mockMessage({ type: 'Other' }), populateExceptionFn);
     });
-    test('send email function not called', async () => {
-      const result = await sendEmail(mockMessage({ type: 'Other' }));
+    test('send email function not called', () => {
+      expect(send).not.toHaveBeenCalled();
+    });
+    test('show an warning log informing about the ignored type', () => {
       expect(console.warn).toHaveBeenCalledTimes(1);
-      expect(console.error).toHaveBeenCalledTimes(0);
-      expect(sgMail.send).toHaveBeenCalledTimes(0);
+    });
+    test('do not show any error log', () => {
+      expect(console.error).not.toHaveBeenCalled();
+    });
+    test('no exception occurs', () => {
+      expect(populateExceptionFn).not.toHaveBeenCalled();
     });
   });
   describe('when no errors in the send email operation', () => {
     let message;
-    beforeEach(() => {
+    let populateExceptionFn;
+    beforeEach(async () => {
+      send.mockClear();
       global.console = { info: jest.fn(), error: jest.fn() };
       message = mockMessage();
+      populateExceptionFn = jest.fn();
+      await sendEmail(mockMessage(), populateExceptionFn);
     });
-    test('send email function called and email sent', async () => {
-      const result = await sendEmail(mockMessage());
-      expect(console.info).toHaveBeenCalledTimes(1);
-      expect(console.info).toHaveBeenCalledWith('Email sent.');
-      expect(console.error).toHaveBeenCalledTimes(0);
-      expect(sgMail.send).toHaveBeenCalledTimes(1);
-      expect(sgMail.send).toHaveBeenCalledWith({
+    test('send email function called', () => {
+      expect(send).toHaveBeenCalledTimes(1);
+      expect(send).toHaveBeenCalledWith({
         from: message.fromEmail,
         html: 'Hey user, thanks for registering!',
         subject: `Welcome ${message.customer.firstName}`,
@@ -59,30 +64,44 @@ describe('calling the send email function', () => {
         to: message.customer.email,
       });
     });
+    test('show log info when email is sent', () => {
+      expect(console.info).toHaveBeenCalledTimes(1);
+      expect(console.info).toHaveBeenCalledWith('Email sent.');
+    });
+    test('do not show any error log', () => {
+      expect(console.error).not.toHaveBeenCalled();
+    });
+    test('no exception occurs', () => {
+      expect(populateExceptionFn).not.toHaveBeenCalled();
+    });
   });
 
   describe('when some error in the send email operation occurs', () => {
     const error = { message: 'Error!', code: 500 };
-    beforeEach(() => {
+    let populateExceptionFn;
+    beforeEach(async () => {
+      send.mockClear();
       global.console = { info: jest.fn(), error: jest.fn() };
-      sgMail.send = jest.fn(
-        () =>
-          new Promise(function(resolve, reject) {
-            reject(error);
-          })
+      send.mockImplementation(
+        jest.fn(
+          () =>
+            new Promise(function(resolve, reject) {
+              reject(error);
+            })
+        )
       );
+      populateExceptionFn = jest.fn();
+      await sendEmail(mockMessage(), populateExceptionFn);
     });
-    test('send email function called and error shown', async () => {
-      try {
-        const result = await sendEmail(mockMessage());
-        expect(true).toBe(false);
-      } catch (_) {
-        expect(sgMail.send).toHaveBeenCalledTimes(1);
-        expect(console.error).toHaveBeenCalledTimes(1);
-        expect(console.error).toHaveBeenCalledWith(
-          `Sendgrid -> Error ${error.message} with code ${error.code}`
-        );
-      }
+    test('send email function called', () => {
+      expect(send).toHaveBeenCalledTimes(1);
+    });
+    test('populate exception function is called', () => {
+      expect(populateExceptionFn).toHaveBeenCalledTimes(1);
+      expect(populateExceptionFn).toHaveBeenCalledWith({
+        code: 500,
+        message: 'Error!',
+      });
     });
   });
 });

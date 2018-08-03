@@ -3,11 +3,15 @@ import { buildMessage } from '../../utils';
 describe('building message to be sent', () => {
   describe('when no supported type received', () => {
     const invalidMessage = { type: 'NotValidType' };
+    let message;
     beforeEach(() => {
       global.console = { warn: jest.fn() };
+      message = buildMessage(invalidMessage);
     });
     test('return null value', () => {
-      expect(buildMessage(invalidMessage)).toBeNull();
+      expect(message).toBeNull();
+    });
+    test('should show a warning log message', () => {
       expect(console.warn).toHaveBeenCalledTimes(1);
       expect(console.warn).toHaveBeenCalledWith(
         `Ignoring message: ${JSON.stringify(invalidMessage)}`
@@ -67,9 +71,9 @@ describe('building message to be sent', () => {
     test('return reset password message', () => {
       expect(buildMessage(resetPasswordMessage)).toEqual({
         from: resetPasswordMessage.fromEmail,
-        html: `Here is the link to reset your password <a>${
+        html: `Here is the <a href="${
           resetPasswordMessage.resetPasswordUrlPrefix
-        }${resetPasswordMessage.token}</a>`,
+        }${resetPasswordMessage.token}">link</a> to reset your password`,
         subject: 'Reset Password',
         substitutions: {
           email: resetPasswordMessage.email,

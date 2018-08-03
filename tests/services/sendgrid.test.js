@@ -1,5 +1,5 @@
 import { send, setApiKey } from '@sendgrid/mail';
-import { sendEmail } from '../../services/sendgrid';
+import { sendEmail, populateSendgridException } from '../../services/sendgrid';
 
 jest.mock('@sendgrid/mail', () => {
   return {
@@ -103,5 +103,23 @@ describe('calling the send email function', () => {
         message: 'Error!',
       });
     });
+  });
+});
+
+describe('populate exception', () => {
+  beforeEach(async () => {
+    global.console = { error: jest.fn() };
+    try {
+      populateSendgridException({ message: 'Error', code: 500 });
+    } catch (_) {}
+  });
+  test('throws exception', () => {
+    expect(populateSendgridException).toThrow();
+  });
+  test('logs an error', () => {
+    expect(console.error).toHaveBeenCalledTimes(1);
+    expect(console.error).toHaveBeenCalledWith(
+      'Sendgrid -> Error Error with code 500'
+    );
   });
 });

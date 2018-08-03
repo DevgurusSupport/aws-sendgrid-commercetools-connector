@@ -20,18 +20,36 @@ describe('building message to be sent', () => {
   });
 
   describe('when `CustomerCreated` type received', () => {
-    const customerCreatedMessage = {
-      type: 'CustomerCreated',
-      customer: { email: 'test@test.com', firstName: 'John' },
-      fromEmail: 'test@test.io',
-    };
-    test('return customer created message', () => {
-      expect(buildMessage(customerCreatedMessage)).toEqual({
-        from: customerCreatedMessage.fromEmail,
-        html: 'Hey user, thanks for registering!',
-        subject: `Welcome ${customerCreatedMessage.customer.firstName}`,
-        substitutions: customerCreatedMessage.customer,
-        to: customerCreatedMessage.customer.email,
+    describe('when first name passed', () => {
+      const customerCreatedMessage = {
+        type: 'CustomerCreated',
+        customer: { email: 'test@test.com', firstName: 'John' },
+        fromEmail: 'test@test.io',
+      };
+      test('return customer created message', () => {
+        expect(buildMessage(customerCreatedMessage)).toEqual({
+          from: customerCreatedMessage.fromEmail,
+          html: 'Hey user, thanks for registering!',
+          subject: `Welcome ${customerCreatedMessage.customer.firstName}`,
+          substitutions: customerCreatedMessage.customer,
+          to: customerCreatedMessage.customer.email,
+        });
+      });
+    });
+    describe('when no first name passed', () => {
+      const customerCreatedMessage = {
+        type: 'CustomerCreated',
+        customer: { email: 'test@test.com', firstName: undefined },
+        fromEmail: 'test@test.io',
+      };
+      test('return customer created message', () => {
+        expect(buildMessage(customerCreatedMessage)).toEqual({
+          from: customerCreatedMessage.fromEmail,
+          html: 'Hey user, thanks for registering!',
+          subject: 'Welcome user',
+          substitutions: customerCreatedMessage.customer,
+          to: customerCreatedMessage.customer.email,
+        });
       });
     });
   });

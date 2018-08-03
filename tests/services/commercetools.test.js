@@ -1,27 +1,38 @@
 import {
   checkIfCustomerExists,
   generateResetPasswordToken,
+  populateCommercetoolsException,
 } from '../../services/commercetools';
 
 describe('searching customers by email address', () => {
   describe('when the email addres is not found', () => {
     let client;
     let res;
+    let populateExceptionFn;
     beforeEach(async () => {
       client = {
         execute: jest.fn(email =>
           Promise.resolve({ body: { statusCode: 200, results: [] } })
         ),
       };
-      res = await checkIfCustomerExists('test@devgurus.io', client);
+      populateExceptionFn = jest.fn();
+      res = await checkIfCustomerExists(
+        'test@devgurus.io',
+        client,
+        populateExceptionFn
+      );
     });
     test('email address not found', () => {
       expect(res).toBeFalsy();
+    });
+    test('no exception occured', () => {
+      expect(populateExceptionFn).not.toHaveBeenCalled();
     });
   });
   describe('when the email addres is found', () => {
     let client;
     let res;
+    let populateExceptionFn;
     beforeEach(async () => {
       client = {
         execute: jest.fn(email =>
@@ -30,10 +41,39 @@ describe('searching customers by email address', () => {
           })
         ),
       };
-      res = await checkIfCustomerExists('test@devgurus.io', client);
+      populateExceptionFn = jest.fn();
+      res = await checkIfCustomerExists(
+        'test@devgurus.io',
+        client,
+        populateExceptionFn
+      );
     });
     test('email address found', () => {
       expect(res).toBeTruthy();
+    });
+    test('no exception occured', () => {
+      expect(populateExceptionFn).not.toHaveBeenCalled();
+    });
+  });
+  describe('when exception is thrown', () => {
+    let client;
+    let res;
+    let populateExceptionFn;
+    beforeEach(async () => {
+      client = {
+        execute: jest.fn(() => {
+          throw Error('Error');
+        }),
+      };
+      populateExceptionFn = jest.fn();
+      res = await checkIfCustomerExists(
+        'test@devgurus.io',
+        client,
+        populateExceptionFn
+      );
+    });
+    test('exception is caught', () => {
+      expect(populateExceptionFn).toHaveBeenCalledTimes(1);
     });
   });
 });
@@ -41,6 +81,7 @@ describe('searching customers by email address', () => {
 describe('generating reset password token', () => {
   let client;
   let res;
+  let populateExceptionFn;
   beforeEach(async () => {
     client = {
       execute: jest.fn(() =>
@@ -49,9 +90,56 @@ describe('generating reset password token', () => {
         })
       ),
     };
-    res = await generateResetPasswordToken('test@devgurus.io', client);
+    populateExceptionFn = jest.fn();
+    res = await generateResetPasswordToken(
+      'test@devgurus.io',
+      client,
+      populateExceptionFn
+    );
   });
   test('token generated', () => {
     expect(res).toBe('ABCDEFG123456789');
+  });
+  test('no exception occured', () => {
+    expect(populateExceptionFn).not.toHaveBeenCalled();
+  });
+  describe('when exception is thrown', () => {
+    let client;
+    let res;
+    let populateExceptionFn;
+    beforeEach(async () => {
+      client = {
+        execute: jest.fn(() => {
+          throw Error('Error');
+        }),
+      };
+      populateExceptionFn = jest.fn();
+      res = await generateResetPasswordToken(
+        'test@devgurus.io',
+        client,
+        populateExceptionFn
+      );
+    });
+    test('exception is caught', () => {
+      expect(populateExceptionFn).toHaveBeenCalledTimes(1);
+    });
+  });
+});
+
+describe('populate exception', () => {
+  beforeEach(async () => {
+    global.console = { error: jest.fn() };
+    try {
+      populateCommercetoolsException({ body: { message: 'Error', code: 500 } });
+    } catch (_) {}
+  });
+  test('throws exception', () => {
+    expect(populateCommercetoolsException).toThrow();
+  });
+  test('logs an error', () => {
+    expect(console.error).toHaveBeenCalledTimes(1);
+    expect(console.error).toHaveBeenCalledWith(
+      'Commercetools -> Error Error with code 500'
+    );
   });
 });

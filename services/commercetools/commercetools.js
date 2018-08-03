@@ -6,7 +6,11 @@ const requestBuilder = createRequestBuilder({
 
 const customersService = requestBuilder.customers;
 
-export const checkIfCustomerExists = async (email, client) => {
+export const checkIfCustomerExists = async (
+  email,
+  client,
+  populateException = populateCommercetoolsException
+) => {
   const uri = customersService.where(`email="${email}"`).build();
   const fetchRequest = {
     uri,
@@ -20,11 +24,15 @@ export const checkIfCustomerExists = async (email, client) => {
     const queryResult = await client.execute(fetchRequest);
     return queryResult.body.results.length > 0;
   } catch (ex) {
-    populateCommercetoolsException(ex);
+    populateException(ex);
   }
 };
 
-export const generateResetPasswordToken = async (email, client) => {
+export const generateResetPasswordToken = async (
+  email,
+  client,
+  populateException = populateCommercetoolsException
+) => {
   const resetRequest = {
     uri: `/${process.env.COMMERCETOOLS_PROJECT_KEY}/customers/password-token`,
     method: 'POST',
@@ -38,11 +46,11 @@ export const generateResetPasswordToken = async (email, client) => {
     const tokenRequest = await client.execute(resetRequest);
     return tokenRequest.body.value;
   } catch (ex) {
-    populateCommercetoolsException(ex);
+    populateException(ex);
   }
 };
 
-const populateCommercetoolsException = exception => {
+export const populateCommercetoolsException = exception => {
   console.error(
     `Commercetools -> Error when executing the query in commercetools: { code: ${
       exception.body.statusCode

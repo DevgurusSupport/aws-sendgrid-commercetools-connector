@@ -5,7 +5,8 @@
     "Serverless AWS solution to connect commercetools and sendgrid",
   "main": "handler.js",
   "scripts": {
-    "test": "jest --coverage --coverageReporters=text-lcov | coveralls"
+    "test":
+      "node --harmony_proxies node_modules/.bin/jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "author": "",
   "license": "MIT",

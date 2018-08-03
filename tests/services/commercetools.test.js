@@ -130,7 +130,9 @@ describe('populate exception', () => {
   beforeEach(async () => {
     global.console = { error: jest.fn() };
     try {
-      populateCommercetoolsException({ body: { message: 'Error', code: 500 } });
+      populateCommercetoolsException({
+        body: { message: 'Error', statusCode: 500 },
+      });
     } catch (_) {}
   });
   test('throws exception', () => {
@@ -139,7 +141,7 @@ describe('populate exception', () => {
   test('logs an error', () => {
     expect(console.error).toHaveBeenCalledTimes(1);
     expect(console.error).toHaveBeenCalledWith(
-      'Commercetools -> Error Error with code 500'
+      'Commercetools -> Error when executing the query in commercetools: { code: 500, message: Error }'
     );
   });
 });
